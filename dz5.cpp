@@ -1,43 +1,18 @@
 #include <iostream>
-#include <math.h>
+#include <vector>
+#include<math.h>
 using namespace std;
 int simple(int a)
 {
 	int count=0; 
-	if(a<2)
-	{
-		return 0;	
-	}
-	for(int i=2;i<a;++i)
+	for(int i=2;i<sqrt(a)+1;++i)
 	{
 		if(a%i==0)
 		{
 			++count;
 		}
 	}
-	if(count==0)
-	{
-		return 1;
-	} else
-	{
-		return 0;
-	}
-}
-int simple1(int a)
-{
-	int count=0; 
-	if(a<2)
-	{
-		return 0;	
-	}
-	for(int i=1;i<sqrt(a)+1;++i)
-	{
-		if(a%i==0)
-		{
-			++count;
-		}
-	}
-	if((count==1)||(count==2))
+	if(count==1)
 	{
 		return 1;
 	} else
@@ -49,9 +24,21 @@ int simple1(int a)
 int main() {
 	int n;
 	cin>>n;
+vector<bool> prostye (n + 1, true);
+prostye[0] = prostye[1] = false;
+for (int i = 2; i * i <= n; ++i)
+{
+    if (prostye[i])
+    {
+        for (int j = i * i; j <= n; j += i)
+	{
+            prostye[j] = false;
+	}
+    }
+}
 	for(int i=2;i<n+1;++i)
 	{
-		if(simple(i)&&simple1(i+2))
+		if((prostye[i])&&(prostye[i+2]||(simple(i+2))))
 		{
 			cout<<i<<"\n";
 		}
