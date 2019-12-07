@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <ctype.h>
 using namespace std;
-bool nalichie(int x,int n,int *mas)
+bool nalichie(int x,int n,int *mas) //вводим функцию для проверки наличия элемента в массиве с помощью бинарного поиска (в данном случае бин. поиск - оптимальный вариант для того, чтобы это определить)
 {
 	int b=0;
 	int c=n;
@@ -28,7 +28,7 @@ int main() {
 	int n,x,y;
 	cin>>n;
 	int mas[n];
-	for(int i=0;i<n;++i)
+	for(int i=0;i<n;++i) //заполняем массив в порядке неубывания для бинарного поиска (эфеективно, потому что сортируем сразу при получении значений, а не после )
 	{
 		int a=i;
 		cin>>mas[a];
@@ -41,7 +41,7 @@ int main() {
 		}
 	}
 	cin>>x>>y;
-	if(nalichie(x,n,mas)&&nalichie(y,n,mas))
+	if(nalichie(x,n,mas)&&nalichie(y,n,mas))//если оба в наличии, то верно
 	{
 		cout<<"Yes";
 	} else
