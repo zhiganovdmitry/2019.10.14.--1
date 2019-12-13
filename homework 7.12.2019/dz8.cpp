@@ -17,6 +17,6 @@ int main() {
 			--a;
 		}
 	}
-	cout<<mas[k];
+	cout<<mas[k-1];
 	return 0;
 }
