@@ -1,0 +1,219 @@
+#include <iostream>
+#include<string.h>
+#include<map>
+#include <algorithm>
+using namespace std;
+struct tnode {                // узел дерева
+  char *word;                  // указатель на строку (слово)
+  struct tnode *left;          // левый потомок
+  struct tnode *right;         // правый потомок
+};
+// Функция добавления узла к дереву
+struct tnode *addtree(struct tnode *p, map<string,int> s1, map<string,int> s2, map<string,int> sum,int f,int c) {
+  char *it[f];
+  char *left[f];
+  char *right[f];
+  if(p == NULL) //если пустая ветвь
+  {
+    p = (struct tnode *)malloc(sizeof(struct tnode));
+    p->word = strdup(sum.first);
+    it[0]=strdup(sum.first);
+    left[0]=p->left=strdup(s1.first);
+    s1.second=0;
+    right[0]=p->right=strdup(s2.first);
+    s2.second=1;
+  } else
+  {
+  	
+  	for(int i=0;i<(f-c);++i)//проверка вершин, так как их может единовременно быть несколько
+  	{
+  		if(it[i].first==s1[0])
+  		{	
+  			it[i].second=it[i].second*10; //присваивания кода вершине
+			left[f-c]=it[i];	//смена потомков
+  			it[f-c]=strdup(sum.first);	//присваивание указателя вершине
+  			right[f-c]=strdup(s2.first); //присваивание указателя потомку
+  			s2.second=s2.second*10+1;	//присваивание кода потомку
+  		} else
+  		{
+			if(it[i].first==s2[0])
+			{	
+  				it[i].second=it[i].first*10+1;
+				right[f-c]=it[i];
+  				it[f-c]=strdup(sum.first);
+  				left[f-c]=strdup(s1.first);
+  				s1.second=s1.second*10;
+			}
+  			 else
+  			{
+  				it[f-c]=strdup(sum.first)
+  				left[f-c]=strdup(s1.first);
+  				right[f-c]=strdup(s2.first);
+  				s1.second=s1.second*10;
+  				s2.second=s2.second*10+1;
+			}
+		}
+  	}
+  }
+  if(c==0)
+  {
+  	char *k=it[f-c]; //помещение в конце указателя на корень
+  }
+  }
+ int Haffman(map<string,int> tree,int c, int f, int sum[],struct tnode *p)
+{
+	if(c==0)
+	{
+		for(int i=0;i<f;++i)
+		{
+		    if(sum[i]!=0)
+		    {
+		        return sum[i];
+		    }
+		}
+	}
+	int min1=1000;
+	int min2=1000;
+	int min1num;
+	int min2num;
+	for(int i=0;i<f+1;++i) //поиск первого минимального
+	{
+		if((sum[i]<min1)&&(sum[i]!=0))
+		{
+			min1=sum[i];
+			min1num=i;
+		}
+	}
+	for(int i=0;i<f+1;++i) //поиск второго минимального
+	{
+	 if((sum[i]<min2)&&(sum[i]!=0)&&(i!=min1num))
+	 {
+	     min2=sum[i];
+		 min2num=i;
+	 }
+	}
+	map<string,int> x;
+	sum[min1num]=sum[min1num]+sum[min2num];
+	x[min1num]=strcat(tree[min1num].first,tree[min2num].first);
+	addtree(p,tree[min1num],tree[min2num],x[min1num],f,c) //добавление в дерево
+	tree[min1num].first=strcat(tree[min1num].first,tree[min2num].first);
+	sum[min2num]=0;
+	tree[min2num].first='0';
+	--c;
+	return Haffman(tree,c,f,sum,p);
+}
+int codes(struct tnode *p, char *k, map<char,int> code, int r) //считывание кодов вершин
+{
+	if(k==NULL) //если вершина пустая
+	{
+		k=it[r+1]; //подъем на уровень вверх
+		if(k[r+1]==left[r+1]) //поиск указателя на пустую вершину
+		{
+			left[r+1]=NULL;
+		} else
+		{
+			right[r+1]=NULL;
+		}
+		++r;
+		return codes(p,k,code,r);
+	}
+	if((left[r]==NULL)&&(right[r]==NULL)) //поиск листа дерева
+	{
+		code[r].first=it[r].first;
+		code[r].second=it[r].second;
+		k=it[r+1];
+		it[r]=NULL;
+		++r;
+		return codes(p,k,code,r);
+	}
+}
+int main() {
+	struct tnode *root;
+	root=NULL;
+	string text;
+	map<string,int> tree;
+	string s;
+	cin>>text;
+	cout<<"insert function (coding/decoding)\n";
+	cin>>s;
+	int n=text.size();
+	int *sum=new int[n];
+	for(int i=0;i<n;++i)
+	{
+		sum[i]=1;
+	}
+	int c=0;
+	for(int i=0;i<n-1;++i) //заполнение количеством повторов каждой буквы
+	{
+		if(text[i]!='0')
+		{
+			int r=0;
+			for(int j=i+1;j<n;++j)
+			{
+				if(text[i]==text[j])
+				{
+					tree[c].first=text[i];
+					text[j]='0';
+					++sum[c];
+					++r;
+				}
+			}
+			if(r!=0)
+			{
+				++c;
+			} else
+			{
+				tree[c].first=text[c];
+				++c;
+			}
+		}
+	}
+	if(text[n-1]!='0')
+	{
+		tree[c].first=text[n-1];
+	}
+	for(int i=0;i<c+1;++i)
+	{
+		cout<<tree[i].first<<" "<<sum[i]<<"\n";
+	}
+	cout<<c+1;
+	for(int i=c+1;i<n;++i)
+	{
+		sum[i]=0;
+	}
+	int f=c;
+	Haffman(tree,c,f,sum,root);
+	map<char,int> code;
+	int r=f;
+	codes(p,k,code,r);
+	if(s[0]=="c") //при кодировании
+	{
+		for(int i=0;i<text.sixe();++i)
+		{
+			for(int j=0;j<c+1;++j)
+			{
+				if(text[i]==codes[j])
+				{
+					cout<<codes[j];
+				}
+			}
+		}
+	}
+	} else //при декодировании
+	{
+		cout<<"insert word";
+		string decode;
+		cin>>decode;
+		for(int i=0;i<decode.sixe();++i)
+		{
+			for(int j=0;j<c+1;++j)
+			{
+				if(text[i]==codes[j])
+				{
+					cout<<codes[j];
+				}
+			}
+		}
+	}
+	return 0;
+}
