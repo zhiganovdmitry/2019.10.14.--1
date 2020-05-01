@@ -1,0 +1,120 @@
+#include <iostream>
+#include <random>
+#include <string>
+#include <math.h>
+using namespace std;
+int gcd(long long a, long long b)
+{
+    if (a == b) 
+    {
+        return a;
+    }
+    if (a > b)
+    {
+        long long tmp = a;
+        a = b;
+        b = tmp;
+    }
+    return gcd(a,b-a);
+}
+
+void keys(long long p, long long q)
+{
+	long long n=(q-1)*(p-1);
+	long long e=2;
+	while(gcd(e,n)!=1)
+	{
+		++e;
+	}
+	long long d=2;
+	while(((d*e-1)%n)!=0)
+	{
+		++d;
+	}
+	cout<<"public key"<<' '<<'{'<<e<<','<<q*p<<'}'<<'\n'<<"private key"<<' '<<'{'<<d<<','<<q*p<<'}';
+}
+int coding(long long e,long long n,long long m)
+{
+	long long a=e,b=m,k=1;
+	while(a!=1)
+	{
+		if(a%2==0)
+		{
+			a=a/2;
+			b=b*b;
+			b=b%n;
+		} else
+		{
+			if(a%3==0)
+			{
+				a=a/3;
+				b=b*b*b;
+				b=b%n;
+			} else 
+			{
+				k*=b;
+				k=k%n;
+				--a;
+				a=a/2;
+				b=b*b;
+				b=b%n;
+			}
+		}
+	}
+	return (k*b)%n;
+}
+int decoding(long long d,long long n,long long c)
+{
+	long long a=d,b=c,k=1;
+	while(a!=1)
+	{
+		if(a%2==0)
+		{
+			a=a/2;
+			b=b*b;
+			b=b%n;
+		} else
+		{
+			if(a%3==0)
+			{
+				a=a/3;
+				b=b*b*b;
+				b=b%n;
+			} else 
+			{
+				k*=b;
+				k=k%n;
+				--a;
+				a=a/2;
+				b=b*b;
+				b=b%n;
+			}
+		}
+	}
+	return (k*b)%n;
+}
+int main() {
+	string s;
+	cout<<"insert command (coding/decoding/keys)"<<"\n";
+	cin>>s;
+	if(s[0]=='k')
+	{
+		long long p,q;
+		cin>>p>>q;
+		keys(p,q);
+	} else
+	{
+		if(s[0]=='c')
+		{
+			long long e,n,m;
+			cin>>e>>n>>m;
+			cout<<coding(e,n,m);
+		} else
+		{
+			long long d,n,c;
+			cin>>d>>n>>c;
+			cout<<decoding(d,n,c);
+		}
+	}
+	return 0;
+}
